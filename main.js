@@ -51,14 +51,14 @@ document.addEventListener("DOMContentLoaded", function () {
                 unfinishedButton.classList.add("green");
                 unfinishedButton.setAttribute("data-book-id", book.id);
                 unfinishedButton.addEventListener("click", function () {
-                    toggleCompleteStatus(book.id);
+                    bookComplete(book.id);
                 });
                 const finishedButton = document.createElement("button");
                 finishedButton.innerText = "Selesai dibaca";
                 finishedButton.classList.add("green");
                 finishedButton.setAttribute("data-book-id", book.id);
                 finishedButton.addEventListener("click", function () {
-                    toggleCompleteStatus(book.id);
+                    bookComplete(book.id);
                 });
 
                 if (book.isComplete) {
@@ -85,12 +85,7 @@ document.addEventListener("DOMContentLoaded", function () {
             updateBooks(matchingBooks);
         }
 
-        function deleteBook(bookId) {
-            localStorage.removeItem(bookId);
-            updateBooks(AllBooks());
-        }
-
-        function toggleCompleteStatus(bookId) {
+        function bookComplete(bookId) {
             const bookJSON = localStorage.getItem(bookId);
             const book = JSON.parse(bookJSON);
 
@@ -101,11 +96,16 @@ document.addEventListener("DOMContentLoaded", function () {
             updateBooks(AllBooks());
         }
 
+        function deleteBook(bookId) {
+            localStorage.removeItem(bookId);
+            updateBooks(AllBooks());
+        }
+
         const elements = {
             form: document.getElementById("inputBook"),
-            titleInput: document.getElementById("inputBookTitle"),
-            authorInput: document.getElementById("inputBookAuthor"),
-            yearInput: document.getElementById("inputBookYear"),
+            textTitle: document.getElementById("inputBookTitle"),
+            textAuthor: document.getElementById("inputBookAuthor"),
+            textYear: document.getElementById("inputBookYear"),
             isCompleteInput: document.getElementById("inputBookIsComplete"),
             searchForm: document.getElementById("searchBook"),
             searchInput: document.getElementById("searchBookTitle"),
@@ -122,17 +122,17 @@ document.addEventListener("DOMContentLoaded", function () {
         });
 
         const form = elements.form;
-        const titleInput = elements.titleInput;
-        const authorInput = elements.authorInput;
-        const yearInput = elements.yearInput;
+        const textTitle = elements.textTitle;
+        const textAuthor = elements.textAuthor;
+        const textYear = elements.textYear;
         const isCompleteInput = elements.isCompleteInput;
 
         form.addEventListener("submit", function (event) {
             event.preventDefault();
 
-            const title = titleInput.value;
-            const author = authorInput.value;
-            const year = yearInput.value;
+            const title = textTitle.value;
+            const author = textAuthor.value;
+            const year = textYear.value;
             const isComplete = isCompleteInput.checked;
 
             const timestamp = Date.now();
@@ -141,7 +141,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 id: `book-${timestamp}`,
                 title: title,
                 author: author,
-                year: year,
+                year: Number(year),
                 isComplete: isComplete,
             };
 
@@ -149,9 +149,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
             localStorage.setItem(`book-${timestamp}`, bookJSON);
 
-            titleInput.value = "";
-            authorInput.value = "";
-            yearInput.value = "";
+            textTitle.value = "";
+            textAuthor.value = "";
+            textYear.value = "";
             isCompleteInput.checked = false;
 
             updateBooks(AllBooks());
